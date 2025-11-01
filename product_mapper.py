@@ -6,29 +6,30 @@ from pathlib import Path
 
 # Example data: ingredient names and database entries
 ingredient_names = [
-    "chicken breast",
-    "olive oil",
-    "red onion",
-    "garlic",
-    "black beans",
-    "corn",
-    "tomatoes",
-    "vegetable broth",
+    "kyllingebryst",
+    "olivenolie",
+    "rødløg",
+    "hvidløg",
+    "sorte bønner",
+    "majs",
+    "tomater",
+    "grøntsagsbouillon",
     "oregano",
     "paprika"
 ]
 
 product_names = [
-    "chicken filet",
-    "extra virgin olive oil",
-    "onion",
-    "minced garlic",
-    "black beans can",
-    "sweet corn",
-    "diced tomatoes",
-    "vegetable stock cube",
-    "dried oregano",
-    "smoked paprika"
+    "kyllingefilet",
+    "ekstra jomfru olivenolie",
+    "løg",
+    "hakket hvidløg",
+    "dåse med sorte bønner",
+    "søde majs",
+    "hakkede tomater",
+    "tomater",
+    "grøntsagsbouillon, terning",
+    "tørret oregano",
+    "røget paprika"
 ]
 
 def initialize_model() -> SentenceTransformer:
@@ -73,7 +74,13 @@ def search_top_k(model: SentenceTransformer, vector_database: dict, ingredient: 
         distances, idx = data['index'].search(ingredient_embedding, k)
         results[name] = [data['products'][j] for _, j in enumerate(idx[0])]
         if verbose:
-            print(f"Top {k} results: : {results[name]}")
+            print(f"Top {k} results:")
+            for i, name in enumerate(results[name]):
+                print(f"{i+1}.")
+                print(f"Name: {name}")
+                print(f"Distance: {distances[0][i]}")
+                print()
+            print("-------------------------------------------------")
             print()
         
     return results

@@ -1,4 +1,5 @@
-sentence-transformers
 mistralai
+faiss-cpu
 python-dotenv
 ipykernel
+sentence-transformers

@@ -3,3 +3,4 @@ ST-model
 
 *.env
 *.ipynb
+*.json

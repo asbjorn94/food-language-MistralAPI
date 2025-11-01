@@ -1,6 +1,7 @@
 import json
 from dotenv import load_dotenv
 from ingredient_parser import extract_ingredient_information
+from product_mapper import get_best_matches
 
 load_dotenv()
 
@@ -26,10 +27,9 @@ ingredients = [
 if __name__ == "__main__":
     # result = make_prompt("What is the best French cheese?")
     ingredients = extract_ingredient_information(ingredients)
+    best_matches: list[dict] = get_best_matches(ingredients)
 
-    for ingredient in ingredients:
-        ingredient = ingredient['ingredient']
-        print(f"Name: {ingredient['name']}")
-        print(f" - Unit: {ingredient['unit']}")
-        print(f" - Quantity: {ingredient['quantity']}")
+    for i in range(0,len(ingredients)):
+        print(f"Ingredient: {ingredients[i]}")
+        print(f"Best matches: {best_matches[i]}")
         print()

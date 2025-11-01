@@ -4,14 +4,14 @@ import random
 import json
 from mistralai import Mistral
 
-def extract_ingredient_information(ingredients: list[str], max_retries=5) -> dict:
+def extract_ingredient_information(ingredients: list[str], max_retries=5) -> list[dict[str, str | float]]:
     api_key = os.getenv("MISTRAL_API_KEY")
     client = Mistral(api_key=api_key)
 
     prompt = f"""
     Extract the following information from each ingredient in the list below.
     Return the result as a JSON list of dictionaries with the fields:
-    "ingredient": {{
+    {{
         "name": string,
         "unit": str or null
         "quantity": int, float or null.
@@ -26,10 +26,10 @@ def extract_ingredient_information(ingredients: list[str], max_retries=5) -> dic
     prompt_with_examples = f"""
     Extract the following information from each ingredient in the list below.
     Return the result as a JSON list of dictionaries with the fields:
-    "ingredient": {{
-        "name": string,
+    {{
+        "name": str,
         "unit": str or null
-        "quantity": int, float or null.
+        "quantity": float or null.
     }}
 
     The name should exclude any commentary information, that doesn't describe the ingredient.
@@ -37,7 +37,7 @@ def extract_ingredient_information(ingredients: list[str], max_retries=5) -> dic
     Examples: 
     "5 cm ingefær (kan udelades)" should return:
     
-    "ingredient": {{
+    {{
         "name": "ingefær",
         "unit": "cm"
         "quantity": 5
@@ -45,7 +45,7 @@ def extract_ingredient_information(ingredients: list[str], max_retries=5) -> dic
 
     "1 stort græskar" should return:
     
-    "ingredient": {{
+    {{
         "name": "græskar",
         "unit": "stort"
         "quantity": 1
@@ -54,7 +54,7 @@ def extract_ingredient_information(ingredients: list[str], max_retries=5) -> dic
 
     "En lime" should return:
     
-    "ingredient": {{
+    {{
         "name": "lime"
         "unit": null
         "quantity": 1
@@ -74,8 +74,11 @@ def extract_ingredient_information(ingredients: list[str], max_retries=5) -> dic
                 response_format={"type": "json_object"}
             )
             content = chat_response.choices[0].message.content
-            ingredients_data = json.loads(content)
-            return ingredients_data
+            ingredients_data = json.loads(str(content))
+            if ingredients_data:
+                return ingredients_data
+            else:
+                return []
         except Exception as e:
             if "429" in str(e) and i < max_retries - 1:
                 wait_time = (2 ** i) + random.random()

@@ -45,13 +45,18 @@ def create_vector_database(model: SentenceTransformer):
             'index': None,
             'products': product_names
         }
-
-    database_embeddings = model.encode(product_names) #10 x 384-dimensional vectors (each corresponding to a string)
-    faiss.normalize_L2(database_embeddings)
-    dimension = database_embeddings.shape[1]
-    index = faiss.IndexFlatIP(dimension)
-    index.add(database_embeddings)
-    vector_db['index'] = index
+    
+    index_path = Path('product_index.faiss')
+    if index_path.exists():
+        vector_db['index'] = faiss.read_index(str(index_path))
+    else:
+        database_embeddings = model.encode(product_names) #10 x 384-dimensional vectors (each corresponding to a string)
+        faiss.normalize_L2(database_embeddings)
+        dimension = database_embeddings.shape[1]
+        index = faiss.IndexFlatIP(dimension)
+        index.add(database_embeddings)
+        vector_db['index'] = index
+        faiss.write_index(index, str(index_path)) #Write to disk
 
     return vector_db
 
@@ -81,8 +86,6 @@ def search_top_k(model: SentenceTransformer, vector_database: dict, ingredient: 
 def get_best_matches(ingredients: list[dict]):
     model = initialize_model()
     vector_db = create_vector_database(model)
-    print(type(vector_db))
-    print(model)
 
     result = []
     for ingredient in ingredients:

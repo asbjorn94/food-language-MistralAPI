@@ -2,5 +2,6 @@ __pycache__
 ST-model
 
 *.env
+*.faiss
 *.ipynb
 *.json

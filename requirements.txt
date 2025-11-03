@@ -25,6 +25,8 @@ debugpy==1.8.17
     # via ipykernel
 decorator==5.2.1
     # via ipython
+et-xmlfile==2.0.0
+    # via openpyxl
 eval-type-backport==0.2.2
     # via mistralai
 executing==2.2.1
@@ -95,15 +97,20 @@ networkx==3.5
 numpy==2.3.4
     # via
     #   faiss-cpu
+    #   pandas
     #   scikit-learn
     #   scipy
     #   transformers
+openpyxl==3.1.5
+    # via -r requirements.in
 packaging==25.0
     # via
     #   faiss-cpu
     #   huggingface-hub
     #   ipykernel
     #   transformers
+pandas==2.3.3
+    # via -r requirements.in
 parso==0.8.5
     # via jedi
 pexpect==4.9.0
@@ -132,8 +139,11 @@ python-dateutil==2.9.0.post0
     # via
     #   jupyter-client
     #   mistralai
+    #   pandas
 python-dotenv==1.2.1
     # via -r requirements.in
+pytz==2025.2
+    # via pandas
 pyyaml==6.0.3
     # via
     #   huggingface-hub
@@ -203,6 +213,8 @@ typing-inspection==0.4.2
     # via
     #   mistralai
     #   pydantic
+tzdata==2025.2
+    # via pandas
 urllib3==2.5.0
     # via requests
 wcwidth==0.2.14

@@ -1,22 +1,24 @@
+import os
+import pandas as pd
 from sentence_transformers import SentenceTransformer
 import faiss
 from pathlib import Path
 
 #Several functions in this file is inspired by code from the following repository: https://github.com/mkaanaslan/carbon-footprint-wizard
 
-product_names = [
-    "kyllingefilet",
-    "ekstra jomfru olivenolie",
-    "løg",
-    "hakket hvidløg",
-    "dåse med sorte bønner",
-    "søde majs",
-    "hakkede tomater",
-    "tomater",
-    "grøntsagsbouillon, terning",
-    "tørret oregano",
-    "røget paprika"
-]
+# product_names = [
+#     "kyllingefilet",
+#     "ekstra jomfru olivenolie",
+#     "løg",
+#     "hakket hvidløg",
+#     "dåse med sorte bønner",
+#     "søde majs",
+#     "hakkede tomater",
+#     "tomater",
+#     "grøntsagsbouillon, terning",
+#     "tørret oregano",
+#     "røget paprika"
+# ]
 
 def initialize_model() -> SentenceTransformer:
     model_path = Path("ST-model")
@@ -29,7 +31,16 @@ def initialize_model() -> SentenceTransformer:
     return model
 
 
-def create_vector_database(product_names: list[str], model: SentenceTransformer):
+def get_product_names() -> list[str]:
+    dir = os.path.dirname(__file__)
+    file = dir + '/res/DSK_v1.2.xlsx'
+    dsk_db = pd.read_excel(file, sheet_name = "DK", index_col = 0)
+    product_names = dsk_db['Produkt'].tolist()
+    return product_names
+
+def create_vector_database(model: SentenceTransformer):
+    product_names = get_product_names()
+    
     vector_db = {
             'index': None,
             'products': product_names
@@ -69,7 +80,7 @@ def search_top_k(model: SentenceTransformer, vector_database: dict, ingredient: 
 
 def get_best_matches(ingredients: list[dict]):
     model = initialize_model()
-    vector_db = create_vector_database(product_names, model)
+    vector_db = create_vector_database(model)
     print(type(vector_db))
     print(model)
 

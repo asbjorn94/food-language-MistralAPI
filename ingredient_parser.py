@@ -2,9 +2,10 @@ import os
 import time
 import random
 import json
+from pathlib import Path
 from mistralai import Mistral
 
-def extract_ingredient_information(ingredients: list[str], max_retries=5) -> list[dict[str, str | float]]:
+def fetch_from_api(ingredients: list[str], max_retries=5):
     api_key = os.getenv("MISTRAL_API_KEY")
     client = Mistral(api_key=api_key)
 
@@ -76,6 +77,7 @@ def extract_ingredient_information(ingredients: list[str], max_retries=5) -> lis
             content = chat_response.choices[0].message.content
             ingredients_data = json.loads(str(content))
             if ingredients_data:
+                save_to_json(ingredients_data)
                 return ingredients_data
             else:
                 return []
@@ -86,3 +88,20 @@ def extract_ingredient_information(ingredients: list[str], max_retries=5) -> lis
                 time.sleep(wait_time)
             else:
                 raise
+
+def extract_ingredient_information(ingredients: list[str], max_retries=5, use_saved_json=False) -> list[dict[str, str | float]]:
+    if use_saved_json is True:
+        path = Path("ingredients.json")
+        if path.exists():
+            with open(str(path)) as json_file:
+                return json.load(json_file)
+        else:
+            print("Couldn't load ingredients since ingredients.json doesn't exist.")
+    else:
+        fetch_from_api(ingredients,max_retries)
+       
+
+def save_to_json(response: str):
+    with open(str(Path("ingredients.json")), "w", encoding='utf8') as f:
+        result_json = json.dumps(response, sort_keys=True, indent=4, ensure_ascii=False)
+        f.write(result_json) 

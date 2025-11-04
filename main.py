@@ -35,7 +35,7 @@ def timeit_context(name):
 if __name__ == "__main__":
     # result = make_prompt("What is the best French cheese?")
     with timeit_context("Ingredient extraction"):
-        ingredients = extract_ingredient_information(ingredients)
+        ingredients = extract_ingredient_information(ingredients, use_saved_json=True)
     with timeit_context("Product matchting"):
         best_matches: list[dict] = get_best_matches(ingredients)
 

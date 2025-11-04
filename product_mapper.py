@@ -89,7 +89,7 @@ def get_best_matches(ingredients: list[dict]):
 
     result = []
     for ingredient in ingredients:
-        top_k_results = search_top_k(model, vector_db, ingredient['name'], 5, False)
+        top_k_results = search_top_k(model, vector_db, ingredient['name'], 5)
         result.append(top_k_results)
 
     return result

@@ -4,6 +4,7 @@ import random
 import json
 from pathlib import Path
 from mistralai import Mistral
+from language import Language
 
 def fetch_from_api(ingredients: list[str], max_retries=5):
     api_key = os.getenv("MISTRAL_API_KEY")
@@ -89,14 +90,24 @@ def fetch_from_api(ingredients: list[str], max_retries=5):
             else:
                 raise
 
-def extract_ingredient_information(ingredients: list[str], max_retries=5, use_saved_json=False) -> list[dict[str, str | float]]:
+def get_json(file: str):
+    path = Path(file)
+    if path.exists():
+        with open(str(path)) as json_file:
+            return json.load(json_file)
+    else:
+        print(f"Couldn't load ingredients since {file} doesn't exist.")
+
+def extract_ingredient_information(ingredients: list[str], max_retries=5, use_saved_json=False, language=Language.DK) -> list[dict[str, str | float]]:
     if use_saved_json is True:
-        path = Path("ingredients.json")
-        if path.exists():
-            with open(str(path)) as json_file:
-                return json.load(json_file)
+        if language is Language.DK:
+            return get_json("ingredients_DK.json")
+        elif language is Language.EN:
+            return get_json("ingredients_EN.json")
         else:
-            print("Couldn't load ingredients since ingredients.json doesn't exist.")
+            print("Couldn't load ingredients since json file doesn't exist for the given language.")
+
+
     else:
         fetch_from_api(ingredients,max_retries)
        

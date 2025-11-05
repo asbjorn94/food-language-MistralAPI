@@ -4,6 +4,7 @@ from contextlib import contextmanager
 from dotenv import load_dotenv
 from ingredient_parser import extract_ingredient_information
 from product_mapper import get_best_matches
+from language import Language
 
 load_dotenv()
 
@@ -33,13 +34,8 @@ def timeit_context(name):
     print(f"{name} took {end_time - start_time:.4f} seconds")
 
 if __name__ == "__main__":
-    # result = make_prompt("What is the best French cheese?")
+    language = Language.EN
     with timeit_context("Ingredient extraction"):
-        ingredients = extract_ingredient_information(ingredients, use_saved_json=True)
+        ingredients = extract_ingredient_information(ingredients, use_saved_json=True, language=language)
     with timeit_context("Product matchting"):
-        best_matches: list[dict] = get_best_matches(ingredients)
-
-    # for i in range(0,len(ingredients)):
-    #     print(f"Ingredient: {ingredients[i]}")
-    #     print(f"Best matches: {best_matches[i]}")
-    #     print()
+        best_matches: list[dict] = get_best_matches(ingredients, language=language)

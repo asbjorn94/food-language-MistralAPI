@@ -34,7 +34,7 @@ def timeit_context(name):
     print(f"{name} took {end_time - start_time:.4f} seconds")
 
 if __name__ == "__main__":
-    language = Language.EN
+    language = Language.DK
     with timeit_context("Ingredient extraction"):
         ingredients = extract_ingredient_information(ingredients, use_saved_json=True, language=language)
     with timeit_context("Product matchting"):

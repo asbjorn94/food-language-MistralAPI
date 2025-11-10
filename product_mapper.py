@@ -7,10 +7,10 @@ from pathlib import Path
 
 #Some functions in this file is inspired by code from the following repository: https://github.com/mkaanaslan/carbon-footprint-wizard
 
-def initialize_model() -> SentenceTransformer:
-    model_path = Path("ST-model")
+def initialize_model(model_name: str) -> SentenceTransformer:
+    model_path = Path("sentence-transformer-models/" + model_name)
     if not model_path.exists():
-        model = SentenceTransformer("all-MiniLM-L6-v2")
+        model = SentenceTransformer(model_name)
         model.save(str(model_path))
     else:
         model = SentenceTransformer(str(model_path))
@@ -81,7 +81,7 @@ def search_top_k(model: SentenceTransformer, vector_database: dict, ingredient: 
 
 
 def get_best_matches(ingredients: list[dict], language=Language.DK):
-    model = initialize_model()
+    model = initialize_model("all-MiniLM-L6-v2")
     vector_db = create_vector_database(model, language)
     result = []
     for ingredient in ingredients:

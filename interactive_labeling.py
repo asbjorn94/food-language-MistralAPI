@@ -1,13 +1,16 @@
+from pathlib import Path
 import csv
 # import keyboard
 
-def interactive_labeling(input_file, output_file):
+def interactive_labeling(input_file, output_file):    
     with open(input_file, 'r', encoding='utf-8') as infile, \
-         open(output_file, 'w', newline='', encoding='utf-8') as outfile:
+         open(output_file, 'a', newline='', encoding='utf-8') as outfile:
 
         reader = csv.reader(infile)
         writer = csv.writer(outfile)
-        writer.writerow(["ingredient_1", "ingredient_2", "label"])  # Header
+        
+        if not Path(output_file).exists():
+            writer.writerow(["ingredient_1", "ingredient_2", "label"])  # Header
 
         next(reader)  # Skip header
 

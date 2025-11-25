@@ -81,7 +81,8 @@ def search_top_k(model: SentenceTransformer, vector_database: dict, ingredient: 
 
 
 def get_best_matches(ingredients: list[dict], language=Language.DK):
-    model = initialize_model("all-MiniLM-L6-v2")
+    # model = initialize_model("all-MiniLM-L6-v2")
+    model = initialize_model("all-MiniLM-L6-v2-finetuned-DK-ingredients/final")
     vector_db = create_vector_database(model, language)
     result = []
     for ingredient in ingredients:
